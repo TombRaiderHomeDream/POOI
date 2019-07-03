@@ -1,84 +1,250 @@
-#include <iosream>
+#include <iostream>
 #include <stdio.h>
 #include <conio.h>
+#include <stdlib.h>
 
 using namespace std;
 
-/******* »ù±¾ºê¶¨Òå *******************/
+/******* åŸºæœ¬å®å®šä¹‰ *******************/
 #define OK 1
 #define ERROR 0
 
-/******* ³µ½á¹¹¶¨Òå *******************/
+/******* è½¦ç»“æ„å®šä¹‰ *******************/
 typedef struct
 {
-    char A;
-    char D;
-
+    char AD;
     int car;
     int time;
 }CAR;
 
-/******* Õ»½á¹¹¶¨Òå *******************/
-#define SInit 20
-#define SAdd 10
+/******* æ ˆç»“æ„å®šä¹‰ *******************/
+#define S_Init 20
 
 typedef struct
 {
+    CAR *data;
     int top;
 
     int size;
 }stack;
 
-/******* ¶ÓÁĞ½á¹¹¶¨Òå *****************/
-#define QInit 20
-#define QAdd 10
-
+/******* é˜Ÿåˆ—ç»“æ„å®šä¹‰ *****************/
 typedef struct
 {
-    int front;
-    int rear;
+    CAR *front;
+    CAR *rear;
 }queue;
 
-/******* º¯Êı *************************/
-	// Õ»
-int SInit(stack S);
+/******* å‡½æ•° *************************/
+	// æ ˆ
+int SInit(stack &S);
 int SEmpty(stack S);
-int Push(stack S);
-int Pop(satck S);
+int SFull(stack S);
+int Push(stack &S, CAR C);
+CAR Pop(stack &S);
 
-	// ÆäËû
+	// é˜Ÿåˆ—
+int QInit(queue &Q);
+int QEmpty(queue Q);
+int QAdd(queue &Q, CAR C);
+CAR Qleave(queue &Q);
+
+	// CAR
+int CAdd(CAR C, stack &S, queue &Q);
+int Cleave(CAR C, stack &S, queue &Q);
+
+	// å…¶ä»–
 void Pause();
 
-/******* Ö÷º¯Êı ***********************/
+/******* ä¸»å‡½æ•° ***********************/
 int main()
 {
+    stack S;
+    SInit(S);
+
+    stack SS;
+    SInit(SS);
+
+    queue Q;
+    QInit(Q);
+
+    CAR C;
+
     Pause();
     return 0;
 }
 
 
 
-/******* º¯ÊıÊµÏÖ *********************/
+/******* å‡½æ•°å®ç° *********************/
 void Pause()
 {
-    cout << "Enter any keys to continue..."
+    cout << "Enter any keys to 
+
+continue...";
     int get = getch();
 
     return;
 }
 
-int SInit(stack S)
+int SInit(stack &S)
 {
+    S.data = (int *) malloc (S_Init * 
+
+sizeof(int));
+    if (!S.data) return ERROR;
+
+    S.top = 0;
+    S.size = S_Init;
+
+    return OK;
 }
 
 int SEmpty(stack S)
 {
+    if (S.top == 0)
+    {
+	return OK;
+    }
+
+    else return ERROR;
 }
 
-int Push(stack S)
+int SFull(stack S)
 {
+    if (S.top - 1 == S.size) return OK;
+
+    else return ERROR;
 }
 
-int Pop(stack S)
+int Push(stack &S, CAR C)
 {
+    if (S.top - 1 == S.size) // æ ˆæ»¡
+    {
+	return ERROR;
+    }
+
+    S.data[S.top++] = C;
+
+    return OK;
+}
+
+CAR Pop(stack &S)
+{
+    if (S.top == 0) return NULL;
+
+    S.top--;
+
+    return S.data[S.top];
+}
+
+int QInit(queue &Q)
+{
+    Q.front = (int *) malloc (sizeof
+
+(int));
+    if (!Q.front) return ERROR;
+
+    Q.rear = Q.front;
+
+    return OK;
+}
+
+int QEmpty(queue Q)
+{
+    if (Q.front == Q.rear) return OK;
+
+    else return OK;
+}
+
+int QAdd(queue &Q, CAR C)
+{
+    Q.rear = (int *) malloc (sizeof
+
+(int));
+    if (!Q.rear) return ERROR;
+
+    *Q.rear = C;
+    Q.rear++;
+
+    return OK;
+}
+
+CAR Qleave(queue &Q)
+{
+    if (QEmpty(Q)) return NULL;
+
+    int *p = Q.front;
+    CAR data;
+
+    data = *Q.front;
+
+    Q.front++;
+
+    return data;
+}
+
+int CAdd(CAR C, stack &S, queue &Q)
+{
+    cin >> C.AD >> C.car >> C.time;
+
+    if (!SFull(S)) 
+    {
+	cout << C.car << " å·è½¦è¿›å…¥ " << 
+
+S.top << " å·ä½" << endl;
+
+	Push(S, C)
+    }
+
+    else
+    {
+	cout << C.car << " å·è½¦è¿›å…¥ä¾¿é“
+
+ç­‰å¾…" << endl;
+
+	QAdd(Q, C)
+    }
+
+    return OK;
+}
+
+int Cleave(CAR C, stack &S, stack &SS, 
+
+queue &Q)
+{
+    cin >> C.AD >> C.car >> C.time;
+
+    CAR CC;
+
+    if (!SEmpty(S))
+    {
+	while (CC.car != C.car)
+	{
+	    CC = Pop(S);
+	    Push(SS, CC);
+	    if (CC.car == C.car) 
+
+SS.top--;
+	}
+
+	cout << C.car << " å·è½¦ç¦»å¼€ï¼Œ " 
+
+<< "åœç•™æ—¶é—´ " << C.time - CC.time << 
+
+endl;
+    }
+
+    if (!SFull(S))
+    {
+	CC = Qleave(Q);
+
+	cout << C.car << " å·è½¦è¿›å…¥ " << 
+
+S.top << " å·ä½" << endl;
+
+	Push(S, CC);
+    }
+
+    return OK;
 }
